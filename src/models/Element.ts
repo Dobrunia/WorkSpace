@@ -24,7 +24,7 @@ export class Element {
     this.content = content;
     this.type = type;
     this.zIndex = zIndex;
-    this.status = 'selected';
+    this.status = 'deselected';
   }
 
   public setPosition(coords: { x: number; y: number }): void {

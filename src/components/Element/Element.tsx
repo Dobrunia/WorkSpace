@@ -3,15 +3,13 @@ import { ElementProps } from '../../types/types';
 import './Element.css';
 
 export const Element = React.memo((props: ElementProps) => {
-  const { elementExemplar } = props;
-
+  const { elementExemplar, isSelected } = props;
+  console.log('render Element');
   return (
     <div
       id={elementExemplar.getId()}
       key={elementExemplar.getId()}
-      className={`element ${
-        elementExemplar.getStatus() === 'selected' ? 'selected' : ''
-      }`}
+      className={`element ${isSelected ? 'selected' : ''}`}
       style={{
         left: elementExemplar.getPosition().x + 'px',
         top: elementExemplar.getPosition().y + 'px',

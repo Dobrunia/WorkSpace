@@ -38,7 +38,7 @@ export const Board = React.memo((props: BoardProps) => {
         //клик по уже выбранному элементу
       } else if (targetId) {
         //клик по новому элементу
-        boardExemplar.getElements().map((element: ElementModel) => {
+        boardExemplar.getElements().forEach((element: ElementModel) => {
           if (element.getId() === targetId) {
             element.setStatus('selected');
           } else {
@@ -48,7 +48,7 @@ export const Board = React.memo((props: BoardProps) => {
         setSelectedElementId(targetId);
       } else {
         //клик вне елемента
-        boardExemplar.getElements().map((element: ElementModel) => {
+        boardExemplar.getElements().forEach((element: ElementModel) => {
           element.setStatus('deselected');
         });
         setSelectedElementId(null);
@@ -57,7 +57,7 @@ export const Board = React.memo((props: BoardProps) => {
 
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
-  }, [selectedElementId]);
+  }, [boardExemplar, selectedElementId]);
 
   //   const [elements, setElements] = useState<ElementModel[]>(
   //     boardExemplar.getElements(),
@@ -190,7 +190,13 @@ export const Board = React.memo((props: BoardProps) => {
   return (
     <div className="Board" onMouseMove={handleMouseMove} onPaste={handlePaste}>
       {boardExemplar.getElements().map((element: ElementModel) => {
-        return <Element key={element.getId()} elementExemplar={element} />;
+        return (
+          <Element
+            key={element.getId()}
+            elementExemplar={element}
+            isSelected={element.getId() === selectedElementId}
+          />
+        );
       })}
     </div>
   );

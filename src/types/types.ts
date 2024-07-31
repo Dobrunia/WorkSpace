@@ -9,4 +9,5 @@ export type BoardProps = {
 
 export type ElementProps = {
   elementExemplar: Element;
+  isSelected: boolean;
 };
