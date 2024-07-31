@@ -4,7 +4,6 @@ import './Element.css';
 
 export const Element = React.memo((props: ElementProps) => {
   const { elementExemplar, isSelected } = props;
-  console.log('render Element');
   return (
     <div
       id={elementExemplar.getId()}

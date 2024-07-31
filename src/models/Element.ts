@@ -36,6 +36,10 @@ export class Element {
     this.status = status;
   }
 
+  public setZIndex(zIndex: number): void {
+    this.zIndex = zIndex;
+  }
+
   public getId(): string {
     return this.id;
   }

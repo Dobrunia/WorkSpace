@@ -2,11 +2,12 @@
     position: absolute;
     transform: translate(-50%, -50%);
     border: 2px solid transparent;
-    cursor: grab;
+    cursor: pointer;
 }
 
 .element.selected {
     border: 2px solid var(--selected-element-border-color);
+    cursor: grab;
 }
 
 .element.dragging {
