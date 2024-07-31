@@ -1,0 +1,83 @@
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* #131313 #0A0A0A */
+    --main-bg-color: #131313;
+    --main-text-color: #dad9d9;
+    /* #228B22 #32CD32 #2E8B57 */
+    --main-attention-color: #32CD32;
+    --brush-color: #000000;
+    --selected-element-border-color: #fff;
+}
+
+* {
+    /* background-color: var(--main-bg-color); */
+    color: var(--main-text-color);
+}
+
+body {
+    font-size: 24px;
+    background-color: var(--main-bg-color);
+}
+
+.App {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+
+.header {
+    width: 100%;
+    height: 50px;
+    color: var(--main-attention-color);
+    font-size: 32px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controlPanel {
+    width: 70px;
+    height: 300px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    padding: 16px;
+    background-color: var(--main-attention-color);
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    z-index: 100000;
+}
+
+.controlPanel * {
+    width: 34px;
+    height: 34px;
+}
+
+.selectedTool {
+    background-color: var(--main-text-color);
+    border-radius: 15px;
+}
+
+.brushBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#brush {
+    display: none;
+}

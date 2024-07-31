@@ -1,0 +1,25 @@
+.element {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border: 2px solid transparent;
+    cursor: grab;
+}
+
+.element.selected {
+    border: 2px solid var(--selected-element-border-color);
+}
+
+.element.dragging {
+    cursor: grabbing;
+}
+
+.textElement {
+    font-size: 30px;
+    text-align: center;
+}
+
+.resizeHandle {
+    width: 20px;
+    height: 20px;
+    background-color: pink;
+}
