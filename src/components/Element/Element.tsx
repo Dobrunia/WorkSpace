@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { ElementType } from '../../types/types';
 import './Element.css';
@@ -8,11 +8,14 @@ type ElementProps = {
 };
 
 export const Element = React.memo((props: ElementProps) => {
+  const elementRef = useRef(null);
   const [elementCoords, setElementCoords] = useState<{ x: number; y: number }>({
     x: props.element.x,
     y: props.element.y,
   });
-  const [elementZIndex, setElementZIndex] = useState<number>(props.element.zIndex);
+  const [elementZIndex, setElementZIndex] = useState<number>(
+    props.element.zIndex,
+  );
   // const [elementSize, setElementSize] = useState<{ width: number, height: number }>({
   //   width: props.width,
   //   height: props.height,
@@ -26,6 +29,7 @@ export const Element = React.memo((props: ElementProps) => {
 
   return (
     <Draggable
+      nodeRef={elementRef}
       defaultPosition={{
         x: elementCoords.x,
         y: elementCoords.y,
@@ -38,7 +42,7 @@ export const Element = React.memo((props: ElementProps) => {
         y: elementCoords.y,
       }}
     >
-      <div id={props.element.id} className={`element`}>
+      <div ref={elementRef} id={props.element.id} className={`element`}>
         {props.element.type === 'text' ? (
           <div className="textElement">{props.element.content}</div>
         ) : props.element.type === 'image' ? (
@@ -46,7 +50,7 @@ export const Element = React.memo((props: ElementProps) => {
         ) : (
           <div>Undefined type</div>
         )}
-        <div className="resizeHandle" />
+        <div className="resizeHandle"></div>
       </div>
     </Draggable>
   );
