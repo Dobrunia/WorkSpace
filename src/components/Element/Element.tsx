@@ -46,7 +46,7 @@ export const Element = React.memo((props: ElementProps) => {
         {props.element.type === 'text' ? (
           <div className="textElement">{props.element.content}</div>
         ) : props.element.type === 'image' ? (
-          <img src={props.element.content} alt="" className="imgElement" />
+          <img src={props.element.content} alt="" className="imgElement" draggable="false" />
         ) : (
           <div>Undefined type</div>
         )}
