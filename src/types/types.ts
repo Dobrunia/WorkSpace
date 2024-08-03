@@ -1,14 +1,16 @@
-import { Board } from '../models/Board.ts';
-import { Element } from '../models/Element.ts';
-
 export type BoardProps = {
   // elements?: ElementType[];
-  boardExemplar: Board;
+  // boardExemplar: Board;
   //setNewBoard: (newBoard: Board) => void;
 };
 
-export type ElementProps = {
-  elementExemplar: Element;
-  isSelected: boolean;
-  onMouseDown?: (event: React.MouseEvent) => void;
+export type ElementType = {
+  id: string;
+  x: number;
+  y: number;
+  content: string;
+  type: 'text' | 'image';
+  zIndex: number;
+  width?: number;
+  height?: number;
 };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
 import { Board } from './components/Board/Board';
-import { Board as BoardModel } from './models/Board.ts';
 
 function App() {
   const [brashColor, setBrushColor] = useState('#000000');
@@ -10,8 +9,6 @@ function App() {
   const handleElementClick = (element: string) => {
     setSelectedTool(element);
   };
-
-  const newBoard = new BoardModel([]);
   
   return (
     <div className="App">
@@ -89,7 +86,7 @@ function App() {
           title="Импортировать рабочее пространство"
         />
       </div>
-      <Board boardExemplar={newBoard} />
+      <Board />
     </div>
   );
 }

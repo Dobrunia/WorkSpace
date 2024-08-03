@@ -8,8 +8,8 @@ export class Element {
   private type: 'text' | 'image';
   private zIndex: number;
   private status?: 'selected' | 'deselected';
-  private width?: number;
-  private height?: number;
+  public width?: number;
+  public height?: number;
 
   constructor(
     x: number,
@@ -27,7 +27,7 @@ export class Element {
     this.status = 'deselected';
   }
 
-  public setPosition(coords: { x: number; y: number }): void {
+  public setPosition(coords: { x: number; y: number}): void {
     this.x = coords.x;
     this.y = coords.y;
   }
@@ -65,5 +65,30 @@ export class Element {
       throw new Error('Status is not defined');
     }
     return this.status;
+  }
+
+  public clone(): Element {
+    // Создаем новый экземпляр с теми же параметрами
+    const clonedElement = new Element(
+      this.x,
+      this.y,
+      this.content,
+      this.type,
+      this.zIndex,
+    );
+
+    clonedElement.id = this.id;
+
+    if (this.status) {
+      clonedElement.setStatus(this.status);
+    }
+    if (this.width) {
+      clonedElement.width = this.width;
+    }
+    if (this.height) {
+      clonedElement.height = this.height;
+    }
+
+    return clonedElement;
   }
 }
