@@ -6,7 +6,7 @@ import './Board.css';
 
 export const Board = React.memo(() => {
   // console.log('Board render');
-  const [elements, setElements] = useState<ElementType[]>([]);
+  const [elements, setElements] = useState<ElementType[]>([]); //TODO:: history state
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
