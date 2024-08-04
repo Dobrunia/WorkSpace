@@ -8,6 +8,7 @@ type ElementProps = {
 };
 
 export const Element = React.memo((props: ElementProps) => {
+  console.log('Element render ' + JSON.stringify(props.element.id));
   const elementRef = useRef(null);
   const [elementCoords, setElementCoords] = useState<{ x: number; y: number }>({
     x: props.element.x,
@@ -17,15 +18,10 @@ export const Element = React.memo((props: ElementProps) => {
     props.element.zIndex,
   );
   const [size, setSize] = useState<{ width: number; height: number }>({
-    width: props.element.width || 100, // Задайте начальную ширину
-    height: props.element.height || 100, // Задайте начальную высоту
+    width: props.element.width || 300,
+    height: props.element.height || 200,
   });
-  // const [elementSize, setElementSize] = useState<{ width: number, height: number }>({
-  //   width: props.width,
-  //   height: props.height,
-  // });
 
-  console.log('Element render ' + JSON.stringify(props.element.id));
   const handleStop = (e, data) => {
     setElementCoords({ x: data.x, y: data.y });
     console.log('Stop', data);
@@ -37,7 +33,6 @@ export const Element = React.memo((props: ElementProps) => {
     const newHeight =
       e.clientY - elementRef.current.getBoundingClientRect().top;
 
-    // Примените ограничения на размеры, если нужно
     if (newWidth > 20 && newHeight > 20) {
       setSize({
         width: newWidth,
