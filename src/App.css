@@ -89,3 +89,11 @@ body {
 #brush {
     display: none;
 }
+
+.eraser {
+    cursor: pointer;
+}
+
+.oneClickTool {
+    cursor: pointer;
+}
