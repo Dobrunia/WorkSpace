@@ -13,6 +13,7 @@ export const Board = React.memo(() => {
   });
   const [brashColor, setBrushColor] = useState<string>('#000000');
   const [selectedTool, setSelectedTool] = useState<string>('brushBox');
+  const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
   const handleElementClick = (element: string) => {
     setSelectedTool(element);
@@ -22,6 +23,10 @@ export const Board = React.memo(() => {
   };
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     setMousePosition({ x: event.clientX, y: event.clientY });
+
+    if (isMouseDown) {
+      console.log('sdsd');
+    }
   };
   const handlePaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -72,9 +77,21 @@ export const Board = React.memo(() => {
       }
     }
   };
+  const handleMouseDown = () => {
+    setIsMouseDown(true);
+  };
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+  };
 
   return (
-    <div className="Board" onMouseMove={handleMouseMove} onPaste={handlePaste}>
+    <div
+      className="Board"
+      onMouseMove={handleMouseMove}
+      onPaste={handlePaste}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+    >
       <div className="controlPanel">
         <div
           className={`brushBox ${
