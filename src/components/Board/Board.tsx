@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Element } from '../Element/Element.tsx';
-import { ElementType } from '../../types/types.ts';
+import { ElementType, PixelType } from '../../types/types.ts';
 import { v4 as uuidv4 } from 'uuid';
+import { Pixel } from '../Pixel/Pixel.tsx';
 import './Board.css';
 
 export const Board = React.memo(() => {
   // console.log('Board render');
-  const [elements, setElements] = useState<ElementType[]>([]); //TODO:: history state
+  const [elements, setElements] = useState<ElementType[] | PixelType[]>([]); //TODO:: history state
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
@@ -24,8 +25,22 @@ export const Board = React.memo(() => {
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     setMousePosition({ x: event.clientX, y: event.clientY });
 
-    if (isMouseDown) {
-      console.log('sdsd');
+    if (isMouseDown && selectedTool === 'brushBox') {
+      const maxZIndex = Math.max(
+        ...elements.map((element) => element.zIndex),
+        0,
+      );
+      const newPixel: PixelType = {
+        id: uuidv4(),
+        x: mousePosition.x,
+        y: mousePosition.y - 48, //костыль TODO:: offset
+        color: brashColor,
+        type: 'pixel',
+        zIndex: maxZIndex,
+        width: 2,
+        height: 2,
+      };
+      setElements([...elements, newPixel]);
     }
   };
   const handlePaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -168,9 +183,13 @@ export const Board = React.memo(() => {
           title="Импортировать рабочее пространство"
         />
       </div>
-      {elements.map((element: ElementType) => (
-        <Element key={element.id} element={element} />
-      ))}
+      {elements.map((element: ElementType | PixelType) => {
+        if (element.type === 'pixel') {
+          return <Pixel key={element.id} element={element} />;
+        } else {
+          return <Element key={element.id} element={element} />;
+        }
+      })}
     </div>
   );
 });

@@ -14,3 +14,14 @@ export type ElementType = {
   width?: number;
   height?: number;
 };
+
+export type PixelType = {
+  id: string;
+  x: number;
+  y: number;
+  color: string;
+  type: 'pixel';
+  zIndex: number;
+  width?: number;
+  height?: number;
+};
