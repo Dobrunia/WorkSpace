@@ -15,6 +15,7 @@
     --main-attention-color: #32CD32;
     --brush-color: #000000;
     --selected-element-border-color: #fff;
+    --selected-tool: #208220;
 }
 
 * {
@@ -76,7 +77,7 @@ body {
 }
 
 .selectedTool {
-    background-color: var(--main-text-color);
+    background-color: var(--selected-tool);
     border-radius: 15px;
 }
 
