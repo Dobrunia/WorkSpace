@@ -60,7 +60,11 @@ export const Element = React.memo((props: ElementProps) => {
         ref={elementRef}
         id={props.element.id}
         className={`element`}
-        style={{ width: size.width, height: size.height }}
+        style={{
+          width: size.width,
+          height: size.height,
+          zIndex: elementZIndex,
+        }}
       >
         {props.element.type === 'text' ? (
           <div className="textElement">{props.element.content}</div> //хочу иметь возможность менять размеры

@@ -3,7 +3,7 @@ import { PixelType } from '../../types/types';
 import './Pixel.css';
 
 type PixelProps = {
-  element: PixelType;
+    pixel: PixelType;
 };
 
 export const Pixel = React.memo((props: PixelProps) => {
@@ -11,12 +11,12 @@ export const Pixel = React.memo((props: PixelProps) => {
     <div
       className="pixel"
       style={{
-        left: props.element.x,
-        top: props.element.y,
-        backgroundColor: props.element.color,
-        zIndex: props.element.zIndex,
-        width: props.element.width,
-        height: props.element.height,
+        left: props.pixel.x,
+        top: props.pixel.y,
+        backgroundColor: props.pixel.color,
+        zIndex: props.pixel.zIndex,
+        width: props.pixel.width,
+        height: props.pixel.height,
       }}
     ></div>
   );
