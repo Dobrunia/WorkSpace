@@ -9,29 +9,22 @@ type ElementProps = {
 
 export const Element = React.memo((props: ElementProps) => {
   console.log('Element render ' + JSON.stringify(props.element.id));
-  const elementRef = useRef(null);
+  const elementRef = useRef<HTMLDivElement>(null);
   const [elementCoords, setElementCoords] = useState<{ x: number; y: number }>({
     x: props.element.x,
     y: props.element.y,
   });
-  const [elementZIndex, setElementZIndex] = useState<number>(
-    props.element.zIndex,
-  );
   const [size, setSize] = useState<{ width: number; height: number }>({
     width: props.element.width || 300,
     height: props.element.height || 200,
   });
-
   const handleStop = (e, data) => {
     setElementCoords({ x: data.x, y: data.y });
-    console.log('Stop', data);
+    //console.log('Stop', data);
   };
-
   const handleResize = (e) => {
-    const newWidth =
-      e.clientX - elementRef.current.getBoundingClientRect().left;
-    const newHeight =
-      e.clientY - elementRef.current.getBoundingClientRect().top;
+    const newWidth = e.clientX - (elementRef.current ? elementRef.current.getBoundingClientRect().left : 0);
+    const newHeight = e.clientY - (elementRef.current ? elementRef.current.getBoundingClientRect().top : 0);
 
     if (newWidth > 20 && newHeight > 20) {
       setSize({
@@ -39,6 +32,9 @@ export const Element = React.memo((props: ElementProps) => {
         height: newHeight,
       });
     }
+  };
+  const handleMouseDown = (event: MouseEvent) => {
+    event.stopPropagation();
   };
 
   return (
@@ -51,6 +47,7 @@ export const Element = React.memo((props: ElementProps) => {
       axis="both"
       bounds="parent"
       onStop={handleStop}
+      onMouseDown={handleMouseDown}
       position={{
         x: elementCoords.x,
         y: elementCoords.y,
@@ -63,7 +60,7 @@ export const Element = React.memo((props: ElementProps) => {
         style={{
           width: size.width,
           height: size.height,
-          zIndex: elementZIndex,
+          zIndex: props.element.zIndex,
         }}
       >
         {props.element.type === 'text' ? (
