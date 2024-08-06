@@ -8,7 +8,6 @@ type ElementProps = {
 };
 
 export const Element = React.memo((props: ElementProps) => {
-  console.log('Element render ' + JSON.stringify(props.element.id));
   const elementRef = useRef<HTMLDivElement>(null);
   const [elementCoords, setElementCoords] = useState<{ x: number; y: number }>({
     x: props.element.x,
@@ -20,7 +19,6 @@ export const Element = React.memo((props: ElementProps) => {
   });
   const handleStop = (e, data) => {
     setElementCoords({ x: data.x, y: data.y });
-    //console.log('Stop', data);
   };
   const handleResize = (e) => {
     const newWidth = e.clientX - (elementRef.current ? elementRef.current.getBoundingClientRect().left : 0);
