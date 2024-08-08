@@ -1,5 +1,5 @@
 import './App.css';
-import DrawingCanvas from './components/FabricJSCanvas/FabricJSCanvas';
+import DrawingCanvas from './components/DrawingCanvas/DrawingCanvas';
 
 function App() {
   return (

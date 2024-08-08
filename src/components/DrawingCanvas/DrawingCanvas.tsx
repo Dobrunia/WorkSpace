@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-const DrawingCanvas: React.FC = () => {
+const DrawingCanvas = React.memo(() => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -55,6 +55,6 @@ const DrawingCanvas: React.FC = () => {
       style={{ border: '1px solid black' }}
     />
   );
-};
+});
 
 export default DrawingCanvas;
