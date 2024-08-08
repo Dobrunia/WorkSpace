@@ -1,5 +1,6 @@
 import { Board } from './components/Board/Board';
 import './App.css';
+import { FabricJSCanvas } from './components/FabricJSCanvas/FabricJSCanvas';
 
 function App() {
   return (
@@ -32,7 +33,8 @@ function App() {
           />
         </svg>
       </header>
-      <Board />
+      {/* <Board /> */}
+      <FabricJSCanvas />
     </div>
   );
 }
