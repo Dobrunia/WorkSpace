@@ -1,23 +1,53 @@
-import React, { useEffect, useRef } from 'react';
-import * as fabric from 'fabric'; // v6
+import React, { useRef, useEffect, useState } from 'react';
 
-export const FabricCanvas = () => {
-  const canvasEl = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    if (canvasEl.current) {
-      const options = {
-        isDrawingMode: true,
-      };
-      const canvas = new fabric.Canvas(canvasEl.current, options);
-      if (canvas.freeDrawingBrush) {
-        canvas.freeDrawingBrush.color = 'red';
-        canvas.freeDrawingBrush.width = 10;
-      }
-      return () => {
-        canvas.dispose();
-      };
-    }
-  }, []);
+const DrawingCanvas: React.FC = () => {
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [isDrawing, setIsDrawing] = useState(false);
 
-  return <canvas width="500" height="500" ref={canvasEl} />;
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const context = canvas?.getContext('2d');
+
+        if (!canvas || !context) return;
+
+        const startDrawing = (event: MouseEvent) => {
+            context.beginPath();
+            context.moveTo(
+                event.clientX - canvas.offsetLeft,
+                event.clientY - canvas.offsetTop
+            );
+            setIsDrawing(true);
+        };
+
+        const draw = (event: MouseEvent) => {
+            if (!isDrawing) return;
+            context.lineTo(
+                event.clientX - canvas.offsetLeft,
+                event.clientY - canvas.offsetTop
+            );
+            context.stroke();
+        };
+
+        const endDrawing = () => {
+            setIsDrawing(false);
+            context.closePath();
+        };
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', endDrawing);
+        canvas.addEventListener('mouseleave', endDrawing);
+
+        // очистка событий при размонтировании
+        return () => {
+            canvas.removeEventListener('mousedown', startDrawing);
+            canvas.removeEventListener('mousemove', draw);
+            canvas.removeEventListener('mouseup', endDrawing);
+            canvas.removeEventListener('mouseleave', endDrawing);
+        };
+    }, [isDrawing]);
+
+    return <canvas ref={canvasRef} width={800} height={600} style={{ border: '1px solid black' }} />;
 };
+
+export default DrawingCanvas;
