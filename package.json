@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "fabric": "^6.1.0",
+    "fabricjs-react": "^2.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-draggable": "^4.4.6",

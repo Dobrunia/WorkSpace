@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as fabric from 'fabric'; // v6
 
-export const FabricJSCanvas = () => {
+export const FabricCanvas = () => {
   const canvasEl = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     if (canvasEl.current) {
@@ -10,8 +10,8 @@ export const FabricJSCanvas = () => {
       };
       const canvas = new fabric.Canvas(canvasEl.current, options);
       if (canvas.freeDrawingBrush) {
-        canvas.freeDrawingBrush.color = 'red'; // Replace with desired color
-        canvas.freeDrawingBrush.width = 10; // Replace with desired width
+        canvas.freeDrawingBrush.color = 'red';
+        canvas.freeDrawingBrush.width = 10;
       }
       return () => {
         canvas.dispose();
@@ -19,5 +19,5 @@ export const FabricJSCanvas = () => {
     }
   }, []);
 
-  return <canvas width="300" height="300" ref={canvasEl} />;
+  return <canvas width="500" height="500" ref={canvasEl} />;
 };
