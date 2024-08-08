@@ -1,4 +1,3 @@
-import { Board } from './components/Board/Board';
 import './App.css';
 import DrawingCanvas from './components/FabricJSCanvas/FabricJSCanvas';
 
@@ -33,7 +32,6 @@ function App() {
           />
         </svg>
       </header>
-      {/* <Board /> */}
       <DrawingCanvas />
     </div>
   );
