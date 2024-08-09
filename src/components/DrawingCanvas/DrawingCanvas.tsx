@@ -2,21 +2,15 @@ import React, { useRef, useEffect, useState } from 'react';
 import './DrawingCanvas.css';
 
 const DrawingCanvas = React.memo(() => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [brushColor, setBrushColor] = useState<string>('#ffffff');
   const [selectedTool, setSelectedTool] = useState<string>('brush');
-  const [lineWidth, setLineWidth] = useState(5);
+  const [lineWidth, setLineWidth] = useState<number>(5);
   const mainBgColor = getComputedStyle(document.documentElement)
     .getPropertyValue('--main-bg-color')
     .trim();
 
-  const handleElementClick = (element: string) => {
-    setSelectedTool(element);
-  };
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLineWidth(parseInt(event.target.value));
-  };
   const handleBroomClick = () => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
@@ -24,49 +18,106 @@ const DrawingCanvas = React.memo(() => {
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = mainBgColor;
   };
+  const mousedownHandler = (event: MouseEvent) => {
+    setStartX(event.clientX);
+    setStartY(event.clientY);
+    if (event.button === 0) {
+      startDrawing(event);
+    } else if (event.button === 1) {
+      handleMouseDown(event);
+    }
+  };
+  const startDrawing = (event: MouseEvent) => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return;
+    context.lineWidth = lineWidth;
+    if (selectedTool === 'eraser') {
+      context.lineWidth = 20;
+      context.strokeStyle = mainBgColor;
+    } else {
+      context.strokeStyle = brushColor;
+    }
+    context.beginPath();
+    const rect = canvas.getBoundingClientRect();
+    context.moveTo(event.clientX - rect.left, event.clientY - rect.top);
+    setIsDrawing(true);
+  };
+  const draw = (event: MouseEvent) => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return;
+    if (!isDrawing) return;
+    const rect = canvas.getBoundingClientRect();
+    context.lineTo(event.clientX - rect.left, event.clientY - rect.top);
+    context.stroke();
+  };
+  const endDrawing = () => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return;
+    setIsDrawing(false);
+    context.closePath();
+  };
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
     if (!canvas || !context) return;
-    const startDrawing = (event: MouseEvent) => {
-      context.lineWidth = lineWidth;
-      if (selectedTool === 'eraser') {
-        context.lineWidth = 20;
-        context.strokeStyle = mainBgColor;
-      } else {
-        context.strokeStyle = brushColor;
-      }
-      context.beginPath();
-      context.moveTo(
-        event.clientX - canvas.offsetLeft,
-        event.clientY - canvas.offsetTop,
-      );
-      setIsDrawing(true);
-    };
-    const draw = (event: MouseEvent) => {
-      if (!isDrawing) return;
-      context.lineTo(
-        event.clientX - canvas.offsetLeft,
-        event.clientY - canvas.offsetTop,
-      );
-      context.stroke();
-    };
-    const endDrawing = () => {
-      setIsDrawing(false);
-      context.closePath();
-    };
-    canvas.addEventListener('mousedown', startDrawing);
+
+    canvas.addEventListener('mousedown', mousedownHandler);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', endDrawing);
     canvas.addEventListener('mouseleave', endDrawing);
 
     return () => {
-      canvas.removeEventListener('mousedown', startDrawing);
+      canvas.removeEventListener('mousedown', mousedownHandler);
       canvas.removeEventListener('mousemove', draw);
       canvas.removeEventListener('mouseup', endDrawing);
       canvas.removeEventListener('mouseleave', endDrawing);
     };
   }, [isDrawing, brushColor, selectedTool, lineWidth]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isPanning, setIsPanning] = useState<boolean>(false);
+  const [startX, setStartX] = useState<number>(0);
+  const [startY, setStartY] = useState<number>(0);
+  const [scrollLeft, setScrollLeft] = useState<number>(0);
+  const [scrollTop, setScrollTop] = useState<number>(0);
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setIsPanning(true);
+    setScrollLeft(containerRef.current.scrollLeft);
+    setScrollTop(containerRef.current.scrollTop);
+  };
+
+  const handleMouseMove = (e) => {
+    if (isPanning) {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      containerRef.current.scrollLeft = scrollLeft - dx;
+      containerRef.current.scrollTop = scrollTop - dy;
+      e.preventDefault();
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsPanning(false);
+  };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('mouseup', handleMouseUp);
+    container.addEventListener('mouseleave', handleMouseUp);
+
+    return () => {
+      container.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('mouseup', handleMouseUp);
+      container.removeEventListener('mouseleave', handleMouseUp);
+    };
+  }, [isPanning, startX, startY, scrollLeft, scrollTop]);
 
   return (
     <>
@@ -74,7 +125,7 @@ const DrawingCanvas = React.memo(() => {
         <div
           className={`brush ${selectedTool === 'brush' ? 'selectedTool' : ''}`}
           title="Кисть"
-          onClick={() => handleElementClick('brush')}
+          onClick={() => setSelectedTool('brush')}
         >
           <label htmlFor="brush">
             <svg
@@ -103,7 +154,7 @@ const DrawingCanvas = React.memo(() => {
           className={`eraser ${
             selectedTool === 'eraser' ? 'selectedTool' : ''
           }`}
-          onClick={() => handleElementClick('eraser')}
+          onClick={() => setSelectedTool('eraser')}
           title="Стирательная резинка"
         >
           <svg
@@ -122,13 +173,14 @@ const DrawingCanvas = React.memo(() => {
           name="range"
           min="1"
           max="10"
-          onChange={handleChange}
+          defaultValue={5}
+          onChange={(event) => setLineWidth(parseInt(event.target.value))}
         />
         <img
           src="/broom.png"
           alt=""
           className="oneClickTool"
-          onClick={() => handleBroomClick()}
+          onClick={handleBroomClick}
           title="Очистить всё"
         />
         <div className="oneClickTool" title="Сохранить рабочее пространство">
@@ -152,7 +204,18 @@ const DrawingCanvas = React.memo(() => {
           title="Импортировать рабочее пространство"
         />
       </div>
-      <canvas ref={canvasRef} className="canvas" width={1200} height={800} />
+      <div
+        ref={containerRef}
+        className="canvasContainer"
+        onMouseDown={mousedownHandler}
+      >
+        <canvas
+          ref={canvasRef}
+          className="canvas"
+          width={10000}
+          height={10000}
+        />
+      </div>
     </>
   );
 });
