@@ -20,6 +20,13 @@ const DrawingCanvas = React.memo(() => {
     canvas = canvasRef.current!;
     context = canvas.getContext('2d')!;
     container = containerRef.current!;
+    canvas.addEventListener(
+      'wheel',
+      (event) => {
+        event.preventDefault(); // Предотвращаем прокрутку
+      },
+      { passive: false },
+    );
   };
   const handleBroomClick = () => {
     context.fillStyle = mainBgColor;
