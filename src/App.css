@@ -90,7 +90,7 @@ body {
     border-radius: 15px;
 }
 
-.brushBox {
+.brush {
     display: flex;
     align-items: center;
     justify-content: space-between;
