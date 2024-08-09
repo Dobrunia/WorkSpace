@@ -3,121 +3,85 @@ import './DrawingCanvas.css';
 
 const DrawingCanvas = React.memo(() => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [brushColor, setBrushColor] = useState<string>('#ffffff');
   const [selectedTool, setSelectedTool] = useState<string>('brush');
   const [lineWidth, setLineWidth] = useState<number>(5);
+  const [isPanning, setIsPanning] = useState<boolean>(false);
   const mainBgColor = getComputedStyle(document.documentElement)
     .getPropertyValue('--main-bg-color')
     .trim();
+  let canvas: HTMLCanvasElement;
+  let context: CanvasRenderingContext2D;
+  let container: HTMLDivElement;
 
-  const handleBroomClick = () => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-    if (!canvas || !context) return;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = mainBgColor;
+  const setContext = () => {
+    canvas = canvasRef.current!;
+    context = canvas.getContext('2d')!;
+    container = containerRef.current!;
   };
-  const mousedownHandler = (event: MouseEvent) => {
-    setStartX(event.clientX);
-    setStartY(event.clientY);
-    if (event.button === 0) {
-      startDrawing(event);
-    } else if (event.button === 1) {
-      handleMouseDown(event);
-    }
+  const handleBroomClick = () => {
+    context.fillStyle = mainBgColor;
+    context.fillRect(0, 0, canvas.width, canvas.height);
   };
   const startDrawing = (event: MouseEvent) => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-    if (!canvas || !context) return;
-    context.lineWidth = lineWidth;
-    if (selectedTool === 'eraser') {
-      context.lineWidth = 20;
-      context.strokeStyle = mainBgColor;
-    } else {
-      context.strokeStyle = brushColor;
-    }
-    context.beginPath();
     const rect = canvas.getBoundingClientRect();
+    context.lineWidth = selectedTool === 'eraser' ? 20 : lineWidth;
+    context.strokeStyle = selectedTool === 'eraser' ? mainBgColor : brushColor;
+    context.beginPath();
     context.moveTo(event.clientX - rect.left, event.clientY - rect.top);
     setIsDrawing(true);
   };
   const draw = (event: MouseEvent) => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-    if (!canvas || !context) return;
     if (!isDrawing) return;
     const rect = canvas.getBoundingClientRect();
     context.lineTo(event.clientX - rect.left, event.clientY - rect.top);
     context.stroke();
   };
   const endDrawing = () => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-    if (!canvas || !context) return;
     setIsDrawing(false);
     context.closePath();
   };
+  const handleMouseDown = (event: MouseEvent) => {
+    event.preventDefault();
+    if (event.button === 0) {
+      startDrawing(event);
+    } else if (event.button === 1 || event.button === 2) {
+      setIsPanning(true);
+    }
+  };
+  const handleMouseMove = (event: MouseEvent) => {
+    if (isPanning) {
+      const dx = event.movementX;
+      const dy = event.movementY;
+      container.classList.add('cursorGrabbing');
+      container.scrollLeft -= dx;
+      container.scrollTop -= dy;
+    } else {
+      draw(event);
+    }
+  };
+  const handleMouseUp = () => {
+    if (isPanning) {
+      setIsPanning(false);
+      container.classList.remove('cursorGrabbing');
+    } else endDrawing();
+  };
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-    if (!canvas || !context) return;
-
-    canvas.addEventListener('mousedown', mousedownHandler);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', endDrawing);
+    setContext();
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseup', handleMouseUp);
     canvas.addEventListener('mouseleave', endDrawing);
 
     return () => {
-      canvas.removeEventListener('mousedown', mousedownHandler);
-      canvas.removeEventListener('mousemove', draw);
-      canvas.removeEventListener('mouseup', endDrawing);
+      canvas.removeEventListener('mousedown', handleMouseDown);
+      canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('mouseup', handleMouseUp);
       canvas.removeEventListener('mouseleave', endDrawing);
     };
-  }, [isDrawing, brushColor, selectedTool, lineWidth]);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isPanning, setIsPanning] = useState<boolean>(false);
-  const [startX, setStartX] = useState<number>(0);
-  const [startY, setStartY] = useState<number>(0);
-  const [scrollLeft, setScrollLeft] = useState<number>(0);
-  const [scrollTop, setScrollTop] = useState<number>(0);
-
-  const handleMouseDown = (e) => {
-    e.preventDefault();
-    setIsPanning(true);
-    setScrollLeft(containerRef.current.scrollLeft);
-    setScrollTop(containerRef.current.scrollTop);
-  };
-
-  const handleMouseMove = (e) => {
-    if (isPanning) {
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      containerRef.current.scrollLeft = scrollLeft - dx;
-      containerRef.current.scrollTop = scrollTop - dy;
-      e.preventDefault();
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsPanning(false);
-  };
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('mouseup', handleMouseUp);
-    container.addEventListener('mouseleave', handleMouseUp);
-
-    return () => {
-      container.removeEventListener('mousemove', handleMouseMove);
-      container.removeEventListener('mouseup', handleMouseUp);
-      container.removeEventListener('mouseleave', handleMouseUp);
-    };
-  }, [isPanning, startX, startY, scrollLeft, scrollTop]);
+  }, [isDrawing, brushColor, selectedTool, lineWidth, isPanning]);
 
   return (
     <>
@@ -204,11 +168,7 @@ const DrawingCanvas = React.memo(() => {
           title="Импортировать рабочее пространство"
         />
       </div>
-      <div
-        ref={containerRef}
-        className="canvasContainer"
-        onMouseDown={mousedownHandler}
-      >
+      <div ref={containerRef} className="canvasContainer">
         <canvas
           ref={canvasRef}
           className="canvas"
