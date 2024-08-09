@@ -1,16 +1,18 @@
 import React, { useRef, useEffect, useState } from 'react';
+import './DrawingCanvas.css';
 
 const DrawingCanvas = React.memo(() => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [color, setColor] = useState('#ffffff');
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
 
     if (!canvas || !context) return;
-
     const startDrawing = (event: MouseEvent) => {
+      context.strokeStyle = color;
       context.beginPath();
       context.moveTo(
         event.clientX - canvas.offsetLeft,
@@ -18,8 +20,8 @@ const DrawingCanvas = React.memo(() => {
       );
       setIsDrawing(true);
     };
-
     const draw = (event: MouseEvent) => {
+
       if (!isDrawing) return;
       context.lineTo(
         event.clientX - canvas.offsetLeft,
@@ -27,32 +29,29 @@ const DrawingCanvas = React.memo(() => {
       );
       context.stroke();
     };
-
     const endDrawing = () => {
       setIsDrawing(false);
       context.closePath();
     };
-
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', endDrawing);
     canvas.addEventListener('mouseleave', endDrawing);
-
-    // очистка событий при размонтировании
+    
     return () => {
       canvas.removeEventListener('mousedown', startDrawing);
       canvas.removeEventListener('mousemove', draw);
       canvas.removeEventListener('mouseup', endDrawing);
       canvas.removeEventListener('mouseleave', endDrawing);
     };
-  }, [isDrawing]);
+  }, [isDrawing, color]);
 
   return (
     <canvas
       ref={canvasRef}
-      width={800}
-      height={600}
-      style={{ border: '1px solid black' }}
+      className='canvas'
+      width={1200}
+      height={800}
     />
   );
 });

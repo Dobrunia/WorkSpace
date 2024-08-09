@@ -32,7 +32,9 @@ function App() {
           />
         </svg>
       </header>
-      <DrawingCanvas />
+      <div className="container">
+        <DrawingCanvas />
+      </div>
     </div>
   );
 }
