@@ -16,17 +16,13 @@ const DrawingCanvas = React.memo(() => {
   let context: CanvasRenderingContext2D;
   let container: HTMLDivElement;
 
+  const wheelHandler = (event: WheelEvent) => {
+    event.preventDefault();
+  };
   const setContext = () => {
     canvas = canvasRef.current!;
     context = canvas.getContext('2d')!;
     container = containerRef.current!;
-    canvas.addEventListener(
-      'wheel',
-      (event) => {
-        event.preventDefault(); // Предотвращаем прокрутку
-      },
-      { passive: false },
-    );
   };
   const handleBroomClick = () => {
     context.fillStyle = mainBgColor;
@@ -81,12 +77,14 @@ const DrawingCanvas = React.memo(() => {
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseup', handleMouseUp);
     canvas.addEventListener('mouseleave', endDrawing);
+    canvas.addEventListener('wheel', wheelHandler);
 
     return () => {
       canvas.removeEventListener('mousedown', handleMouseDown);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseup', handleMouseUp);
       canvas.removeEventListener('mouseleave', endDrawing);
+      canvas.removeEventListener('wheel', wheelHandler);
     };
   }, [isDrawing, brushColor, selectedTool, lineWidth, isPanning]);
 
