@@ -98,3 +98,7 @@ body {
 .oneClickTool {
     cursor: pointer;
 }
+
+.importFile {
+    display: none;
+}

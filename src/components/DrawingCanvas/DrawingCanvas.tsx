@@ -166,12 +166,15 @@ const DrawingCanvas = React.memo(() => {
             <polyline points="7 3 7 8 15 8" />
           </svg>
         </div>
-        <img
-          src="/import.png"
-          alt=""
-          className="oneClickTool"
-          title="Импортировать рабочее пространство"
-        />
+        <input type="file" id="importFile" className='importFile' name="importFile" accept=".json"/>
+        <label htmlFor="importFile">
+          <img
+            src="/import.png"
+            alt=""
+            className="oneClickTool"
+            title="Импортировать рабочее пространство"
+          />
+        </label>
       </div>
       <div ref={containerRef} className="canvasContainer">
         <canvas
