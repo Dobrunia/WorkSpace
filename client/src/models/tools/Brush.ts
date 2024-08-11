@@ -26,6 +26,7 @@ export default class Brush extends Tool {
     event.preventDefault();
     if (event.button === 0) {
       this.isDrawing = true;
+      this.rect = this.canvas.getBoundingClientRect();
       this.context.beginPath();
       this.context.moveTo(
         event.clientX - this.rect.left,
@@ -36,6 +37,7 @@ export default class Brush extends Tool {
   private mouseMoveHandler(event: MouseEvent) {
     if (this.isDrawing) {
       this.context.lineWidth = brushState.getLineWidth();
+      this.rect = this.canvas.getBoundingClientRect();
       this.draw(event.clientX - this.rect.left, event.clientY - this.rect.top);
     }
   }
