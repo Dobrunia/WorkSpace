@@ -16,7 +16,7 @@ const ToolPanel = observer(() => {
           'tool ' + (toolState.tool?.name === 'eraser' ? 'selected' : '')
         }
         title="стирательная резинка"
-        onClick={() => toolState.setTool(new Eraser(canvasState.getCanvas(), canvasState.getContainer()))}
+        onClick={() => toolState.setTool(new Eraser(canvasState.getCanvas()))}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

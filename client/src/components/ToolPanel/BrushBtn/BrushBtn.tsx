@@ -14,7 +14,7 @@ const BrushBtn = observer(() => {
           'tool ' + (toolState.tool?.name === 'brush' ? 'selected' : '')
         }
         title="кисть"
-        onClick={() => toolState.setTool(new Brush(canvasState.getCanvas(), canvasState.getContainer()))}
+        onClick={() => toolState.setTool(new Brush(canvasState.getCanvas()))}
       >
         <label htmlFor="brushColor">
           <svg viewBox="0 0 24 24" fill={brushState.getColor()}>
