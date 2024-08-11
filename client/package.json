@@ -12,6 +12,8 @@
   "dependencies": {
     "fabric": "^6.1.0",
     "fabricjs-react": "^2.0.0",
+    "mobx": "^6.13.1",
+    "mobx-react-lite": "^4.0.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-draggable": "^4.4.6",
