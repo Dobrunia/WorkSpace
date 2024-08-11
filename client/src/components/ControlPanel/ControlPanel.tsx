@@ -3,6 +3,35 @@ import './ControlPanel.css';
 import canvasState from '../../store/canvasState';
 
 export const ControlPanel = React.memo(() => {
+  const save = () => {
+    const dataUrl = canvasState.getCanvas().toDataURL();
+    console.log(dataUrl);
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = new Date() + '.jpg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  const importImage = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = canvasState.getCanvas();
+          const context = canvas.getContext('2d');
+          if (context) {
+            context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            context.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw the image onto the canvas
+          }
+        };
+        img.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   return (
     <div className="controlPanel">
       {/* <button className="controlPanelBtn save" onClick={() => download()}></button>
@@ -32,6 +61,7 @@ export const ControlPanel = React.memo(() => {
       <button
         className="controlPanelBtn save"
         title="сохранить рабочее пространство"
+        onClick={save}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="#000000">
           <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
@@ -40,12 +70,21 @@ export const ControlPanel = React.memo(() => {
         </svg>
       </button>
       <button className="controlPanelBtn import">
-        <img
-          src="/import.png"
-          alt="import"
-          title="Импортировать рабочее пространство"
-        />
+        <label htmlFor="fileInput">
+          <img
+            src="/import.png"
+            alt="import"
+            title="Импортировать рабочее пространство"
+          />
+        </label>
       </button>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={importImage}
+        style={{ display: 'none' }}
+        id="fileInput"
+      />
     </div>
   );
 });

@@ -50,7 +50,7 @@ class CanvasState {
         context.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
       };
     } else {
-      context.clearRect(0, 0, this.canvas.width, this.canvas.heigth);
+      context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
   }
 

@@ -20,7 +20,11 @@ export default class Brush extends Tool {
   }
 
   private mouseUpHandler() {
-    this.isDrawing = false;
+    if(this.isDrawing) {
+      this.isDrawing = false;
+      this.context.closePath();
+    }
+
   }
   private mouseDownHandler(event: MouseEvent) {
     event.preventDefault();
