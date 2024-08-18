@@ -5,7 +5,6 @@ import canvasState from '../../store/canvasState';
 export const ControlPanel = React.memo(() => {
   const save = () => {
     const dataUrl = canvasState.getCanvas().toDataURL();
-    console.log(dataUrl);
     const a = document.createElement('a');
     a.href = dataUrl;
     a.download = new Date() + '.jpg';
